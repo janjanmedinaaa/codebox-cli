@@ -54,7 +54,7 @@ const createCodeSnippet = async(program) => {
     return
   }
 
-  var code = (program.clipboard) ? clipboardy.readSync() : await nv.editor({})
+  var code = (program.clipboard) ? clipboardy.readSync() : await nv.editorSync({})
 
   var jsonData = files.readJSONFile(filename)
   jsonData.snippets.push({
