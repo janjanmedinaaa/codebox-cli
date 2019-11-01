@@ -1,6 +1,7 @@
 const clipboardy = require('clipboardy')
 const logger = require('@janjanmedinaaa/clean/lib/Logs')
 const fs = require('fs')
+const nv = require('node-vim')
 
 const files = require('./utils/files')
 const tools = require('./utils/tools')
@@ -53,12 +54,14 @@ const createCodeSnippet = async(program) => {
     return
   }
 
+  var code = (program.clipboard) ? clipboardy.readSync() : await nv.editor({})
+
   var jsonData = files.readJSONFile(filename)
   jsonData.snippets.push({
     id: tools.createNewID(jsonData.snippets),
     language: languageResult.language,
     title: snippetTitleResult.title,
-    code: clipboardy.readSync()
+    code
   })
 
   files.writeJSONFile(jsonData, filename)

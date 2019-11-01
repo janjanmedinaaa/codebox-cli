@@ -10,6 +10,7 @@ module.exports = () => {
     .option('-l, --language <type>', 'Set Programming Language')
     .option('-t, --title <type>', 'Set Code snippet title')
     .option('-f, --find', 'Find Code snippets')
+    .option('-c, --clipboard', 'Code snippet will be from the clipboard')
     .option('-k, --keyword <type>', 'Keyword to search')
     .option('-e, --export', 'Export Codebox snippets')
   
