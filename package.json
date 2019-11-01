@@ -1,0 +1,25 @@
+{
+  "name": "codebox-cli",
+  "version": "1.0.0",
+  "description": "A CLI tool for saving code snippets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "codebox": "./index.js"
+  },
+  "keywords": [
+    "code",
+    "dev-tools",
+    "snippets"
+  ],
+  "author": "Janjan Medina",
+  "license": "ISC",
+  "dependencies": {
+    "@janjanmedinaaa/clean": "^1.0.0",
+    "clipboardy": "^2.1.0",
+    "commander": "^4.0.0",
+    "inquirer": "^7.0.0"
+  }
+}
