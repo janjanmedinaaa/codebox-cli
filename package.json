@@ -1,6 +1,6 @@
 {
   "name": "codebox-cli",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A CLI tool for saving code snippets",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,10 @@
     "dev-tools",
     "snippets"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janjanmedinaaa/codebox-cli"
+  },
   "author": "Janjan Medina",
   "license": "ISC",
   "dependencies": {
@@ -22,5 +26,6 @@
     "commander": "^4.0.0",
     "inquirer": "^7.0.0",
     "node-vim": "^1.0.0"
-  }
+  },
+  "homepage": "https://github.com/janjanmedinaaa/codebox-cli"
 }

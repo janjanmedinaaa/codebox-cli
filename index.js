@@ -5,11 +5,15 @@ const actions = require('./actions')
 
 if (program.init)
   actions.initializeCodebox()
-else if (program.new)
+  
+if (program.new)
   actions.createProgrammingLanguage(program)
-else if (program.snip)
+
+if (program.snip)
   actions.createCodeSnippet(program)
-else if (program.export)
+
+if (program.export)
   actions.exportCodebox(program)
-else if (program.find)
+
+if (program.find)
   actions.searchCodeSnippets(program)

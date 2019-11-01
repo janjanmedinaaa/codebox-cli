@@ -15,7 +15,12 @@ const initializeCodebox = () => {
   files.writeFolder(FOLDER_PWD)
   files.writeJSONFile({ languages: [] }, LANGUAGES_PWD)
 
-  logger.success('Codebox Initialize. See \'codebox --help\'.')
+  if (fs.existsSync(FOLDER_PWD)) {
+    logger.warning('Codebox already initialized. See \'codebox --help\'.')
+    return
+  }
+
+  logger.success('Codebox initialized. See \'codebox --help\'.')
 }
 
 const createProgrammingLanguage = async(program) => {
