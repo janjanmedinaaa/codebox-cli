@@ -1,4 +1,4 @@
-# Codebox CLI [![npm version](http://img.shields.io/npm/v/REPO.svg?style=flat)](https://www.npmjs.com/package/codebox-cli)
+# Codebox CLI [![npm version](https://badge.fury.io/js/sequelize-cli.svg)](https://www.npmjs.com/package/codebox-cli)
 Save your Code Snippets for multiple Programming Languages directly from the CLI
 
 ## Installation
