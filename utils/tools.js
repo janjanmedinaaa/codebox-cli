@@ -1,14 +1,14 @@
 const files = require('./files')
 
 String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
+    return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
 }
 
 module.exports = {
     createMDFromJSON: (obj) => {
         var jsonData = `# ${obj.title} Code Snippets\n\n`
         obj.snippets.forEach(element => {
-            jsonData += `## ${element.title}\n\n\`\`\`\n${element.code}\n\`\`\`\n\n`
+            jsonData += `## ${element.title}\n\n\`\`\`\n${element.code.trim()}\n\`\`\`\n\n`
         });
         return jsonData
     },

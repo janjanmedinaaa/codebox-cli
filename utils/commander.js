@@ -7,12 +7,13 @@ module.exports = () => {
     .option('-i, --init', 'Initialize Codebox')
     .option('-n, --new', 'Create new Programming Language')
     .option('-s, --snip', 'Save new Code snippet')
+    .option('-f, --find', 'Find Code snippets')
+    .option('-u, --update', 'Update Code snippet')
+    .option('-e, --export', 'Export Codebox snippets')
+    .option('-c, --clipboard', 'Code snippet will be from the clipboard')
     .option('-l, --language <type>', 'Set Programming Language')
     .option('-t, --title <type>', 'Set Code snippet title')
-    .option('-f, --find', 'Find Code snippets')
-    .option('-c, --clipboard', 'Code snippet will be from the clipboard')
     .option('-k, --keyword <type>', 'Keyword to search')
-    .option('-e, --export', 'Export Codebox snippets')
   
   program.parse(process.argv)
   return program

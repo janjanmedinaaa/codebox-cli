@@ -17,3 +17,6 @@ if (program.export)
 
 if (program.find)
   actions.searchCodeSnippets(program)
+
+if (program.update)
+  actions.updateCodeSnippets(program)

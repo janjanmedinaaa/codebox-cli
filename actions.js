@@ -1,12 +1,12 @@
 const clipboardy = require('clipboardy')
 const logger = require('@janjanmedinaaa/clean/lib/Logs')
 const fs = require('fs')
-const nv = require('node-vim')
 
 const files = require('./utils/files')
 const tools = require('./utils/tools')
 const inquirer  = require('./utils/inquirer');
 const strings = require('./strings.json')
+const vim = require('./utils/vim')
 
 const CODE_FOLDER = 'codebox-codes'
 const FOLDER_PWD = `${files.getCodeboxDirLocation()}/${CODE_FOLDER}`
@@ -17,19 +17,19 @@ String.prototype.capitalize = function() {
 }
 
 const initializeCodebox = () => {
-  files.writeFolder(FOLDER_PWD)
-  files.writeJSONFile({ languages: [] }, LANGUAGES_PWD)
-
   if (fs.existsSync(FOLDER_PWD)) {
     logger.warning(strings.warning.codeboxInitialized)
     return
   }
 
+  files.writeFolder(FOLDER_PWD)
+  files.writeJSONFile({ languages: [] }, LANGUAGES_PWD)
+
   logger.success(strings.success.codeboxInitialized)
 }
 
-const createProgrammingLanguage = async(program) => {
-  var languageResult = await inquirer.checkForLanguageNew(program.language)
+const createProgrammingLanguage = async({ language }) => {
+  var languageResult = await inquirer.checkForLanguageNew(language)
   var filename = tools.createCodeSnippetFileName(FOLDER_PWD, languageResult.language)
   var languageData = files.readJSONFile(LANGUAGES_PWD)
   var jsonData = tools.createLanguage(languageResult.language)
@@ -52,11 +52,11 @@ const createProgrammingLanguage = async(program) => {
   logger.success(`${languageResult.language} Programming Language created.`)
 }
 
-const createCodeSnippet = async(program) => {
+const createCodeSnippet = async({ language, title, clipboard }) => {
   var languageData = files.readJSONFile(LANGUAGES_PWD)
   var languageResult = 
     await inquirer.checkForLanguageExisting(
-      program.language, 
+      language, 
       languageData.languages
     )
 
@@ -66,14 +66,14 @@ const createCodeSnippet = async(program) => {
       languageResult.language
     )
   var snippetTitleResult = 
-    await inquirer.checkForCodeSnippetTitle(program.title)
+    await inquirer.checkForCodeSnippetTitle(title)
 
   if (!fs.existsSync(filename)) {
     logger.error(strings.error.noLanguageFound)
     return
   }
 
-  var code = (program.clipboard) ? clipboardy.readSync() : await nv.editorSync({})
+  var code = (clipboard) ? clipboardy.readSync() : await vim.editorSync({})
 
   var jsonData = files.readJSONFile(filename)
   jsonData.snippets.push({
@@ -87,7 +87,7 @@ const createCodeSnippet = async(program) => {
   logger.success(`${languageResult.language} Code Snippet added.`)
 }
 
-const exportCodebox = async(program) => {
+const exportCodebox = async({ language }) => {
   var languageData = files.readJSONFile(LANGUAGES_PWD)
   var languages = languageData.languages
 
@@ -96,7 +96,7 @@ const exportCodebox = async(program) => {
     return
   }
 
-  var languageResult = await inquirer.checkForLanguageExisting(program.language, languages)
+  var languageResult = await inquirer.checkForLanguageExisting(language, languages)
   var filename = tools.createCodeSnippetFileName(
     FOLDER_PWD, 
     languageResult.language
@@ -115,10 +115,10 @@ const exportCodebox = async(program) => {
   logger.success(`${languageResult.language} Code Snippets exported.`)
 }
 
-const searchCodeSnippets = async(program) => {
+const searchCodeSnippets = async({ keyword }) => {
   var languageData = files.readJSONFile(LANGUAGES_PWD)
 
-  var keywordResult = await inquirer.checkForKeyword(program.keyword)
+  var keywordResult = await inquirer.checkForKeyword(keyword)
   var searchResults = tools.searchCodeSnippet(
     languageData.languages, 
     keywordResult.keyword
@@ -136,9 +136,41 @@ const searchCodeSnippets = async(program) => {
     )
     
     var resultIndex = tools.getSearchIndex(snippetResult.snippet) 
-    clipboardy.writeSync(searchResults[resultIndex].code)
+    clipboardy.writeSync(searchResults[resultIndex].code.trim())
     logger.success(strings.success.copiedToClipboard)
   }
+}
+
+const updateCodeSnippets = async({ language, clipboard }) => {
+  var languageData = files.readJSONFile(LANGUAGES_PWD)
+
+  var languageResult = 
+    await inquirer.checkForLanguageExisting(
+      language, 
+      languageData.languages
+    )
+  var filename = 
+    tools.createCodeSnippetFileName(
+      FOLDER_PWD, 
+      languageResult.language
+    )
+  
+  var jsonData = files.readJSONFile(filename)
+  var snippetResult = await inquirer.createChooser(
+    'snippet', 
+    'Choose Code Spinnet:', 
+    Array.from(jsonData.snippets, (x, y) => {
+      return `${y+1}. ${x.language.capitalize()} - ${x.title}`
+    })
+  )
+  var resultIndex = tools.getSearchIndex(snippetResult.snippet) 
+  var codeSnippet = jsonData.snippets[resultIndex]
+
+  var code = (clipboard) ? clipboardy.readSync() : vim.editorSync({ content: codeSnippet.code })
+  jsonData.snippets[resultIndex].code = code.trim()
+
+  files.writeJSONFile(jsonData, filename)
+  logger.success(`${languageResult.language} Code Snippet updated.`)
 }
 
 module.exports = {
@@ -146,5 +178,6 @@ module.exports = {
   createProgrammingLanguage,
   createCodeSnippet,
   exportCodebox,
-  searchCodeSnippets
+  searchCodeSnippets,
+  updateCodeSnippets
 }
