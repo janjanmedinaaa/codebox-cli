@@ -1,0 +1,13 @@
+{
+  "error": {
+    "noLanguageFound": "No Programming Language found. See 'codebox --help'."
+  },
+  "warning": {
+    "codeboxInitialized": "Codebox already initialized. See 'codebox --help'.",
+    "languageExists": "Programming Language already exists. See 'codebox --help'."
+  },
+  "success": {
+    "codeboxInitialized": "Codebox initialized. See 'codebox --help'.",
+    "copiedToClipboard": "Code Snippet copied to Clipboard."
+  }
+}

@@ -6,21 +6,26 @@ const nv = require('node-vim')
 const files = require('./utils/files')
 const tools = require('./utils/tools')
 const inquirer  = require('./utils/inquirer');
+const strings = require('./strings.json')
 
 const CODE_FOLDER = 'codebox-codes'
 const FOLDER_PWD = `${files.getCodeboxDirLocation()}/${CODE_FOLDER}`
 const LANGUAGES_PWD = `${FOLDER_PWD}/languages.json`
+
+String.prototype.capitalize = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+}
 
 const initializeCodebox = () => {
   files.writeFolder(FOLDER_PWD)
   files.writeJSONFile({ languages: [] }, LANGUAGES_PWD)
 
   if (fs.existsSync(FOLDER_PWD)) {
-    logger.warning('Codebox already initialized. See \'codebox --help\'.')
+    logger.warning(strings.warning.codeboxInitialized)
     return
   }
 
-  logger.success('Codebox initialized. See \'codebox --help\'.')
+  logger.success(strings.success.codeboxInitialized)
 }
 
 const createProgrammingLanguage = async(program) => {
@@ -30,7 +35,7 @@ const createProgrammingLanguage = async(program) => {
   var jsonData = tools.createLanguage(languageResult.language)
 
   if (fs.existsSync(filename)) {
-    logger.warning('Programming Language already exists. See \'codebox --help\'.')
+    logger.warning(strings.warning.languageExists)
     return
   }
 
@@ -49,13 +54,22 @@ const createProgrammingLanguage = async(program) => {
 
 const createCodeSnippet = async(program) => {
   var languageData = files.readJSONFile(LANGUAGES_PWD)
-  var languageResult = await inquirer.checkForLanguageExisting(program.language, languageData.languages)
+  var languageResult = 
+    await inquirer.checkForLanguageExisting(
+      program.language, 
+      languageData.languages
+    )
 
-  var filename = tools.createCodeSnippetFileName(FOLDER_PWD, languageResult.language)
-  var snippetTitleResult = await inquirer.checkForCodeSnippetTitle(program.title)
+  var filename = 
+    tools.createCodeSnippetFileName(
+      FOLDER_PWD, 
+      languageResult.language
+    )
+  var snippetTitleResult = 
+    await inquirer.checkForCodeSnippetTitle(program.title)
 
   if (!fs.existsSync(filename)) {
-    logger.error('No Programming Language found. See \'codebox --help\'.')
+    logger.error(strings.error.noLanguageFound)
     return
   }
 
@@ -78,15 +92,18 @@ const exportCodebox = async(program) => {
   var languages = languageData.languages
 
   if (languages.length === 0) {
-    logger.error('No Programming Language yet. See \'codebox --help\'.')
+    logger.error(strings.error.noLanguageFound)
     return
   }
 
   var languageResult = await inquirer.checkForLanguageExisting(program.language, languages)
-  var filename = tools.createCodeSnippetFileName(FOLDER_PWD, languageResult.language)
+  var filename = tools.createCodeSnippetFileName(
+    FOLDER_PWD, 
+    languageResult.language
+  )
 
   if (!fs.existsSync(filename)) {
-    logger.error('No Programming Language found. See \'codebox --help\'.')
+    logger.error(strings.error.noLanguageFound)
     return
   }
 
@@ -102,7 +119,10 @@ const searchCodeSnippets = async(program) => {
   var languageData = files.readJSONFile(LANGUAGES_PWD)
 
   var keywordResult = await inquirer.checkForKeyword(program.keyword)
-  var searchResults = tools.searchCodeSnippet(languageData.languages, keywordResult.keyword)
+  var searchResults = tools.searchCodeSnippet(
+    languageData.languages, 
+    keywordResult.keyword
+  )
 
   logger.success(`${searchResults.length} results found.`)
 
@@ -110,14 +130,14 @@ const searchCodeSnippets = async(program) => {
     var snippetResult = await inquirer.createChooser(
       'snippet', 
       'Choose Code Spinnet:', 
-      Array.from(searchResults, (searchResult, index) => {
-        return `${index+1}. ${searchResult.language.toUpperCase()} - ${searchResult.title}`
+      Array.from(searchResults, (x, y) => {
+        return `${y+1}. ${x.language.capitalize()} - ${x.title}`
       })
     )
     
     var resultIndex = tools.getSearchIndex(snippetResult.snippet) 
     clipboardy.writeSync(searchResults[resultIndex].code)
-    logger.success('Code Snippet copied to Clipboard.')
+    logger.success(strings.success.copiedToClipboard)
   }
 }
 

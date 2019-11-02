@@ -40,11 +40,14 @@ module.exports = {
         keyword = keyword.toLowerCase()
         languages.forEach(language => {
             var jsonData = files.readJSONFile(language.location)
-            if (language.language.includes(keyword)) {
+            var lang = language.language.toLowerCase()
+
+            if (lang.includes(keyword)) {
                 result = result.concat(jsonData.snippets)
             } else {
                 jsonData.snippets.forEach(snippet => {
-                    if (snippet.title.includes(keyword)) {
+                    var title = snippet.title.toLowerCase()
+                    if (title.includes(keyword)) {
                         result.push(snippet)
                     }
                 })
