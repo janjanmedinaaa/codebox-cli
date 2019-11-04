@@ -20,3 +20,9 @@ if (program.find)
 
 if (program.update)
   actions.updateCodeSnippets(program)
+
+if (program.all)
+  actions.getAllCodeSnippets(program)
+
+if (program.delete)
+  actions.deleteCodeSnippets(program)

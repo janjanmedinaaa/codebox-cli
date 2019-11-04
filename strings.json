@@ -1,6 +1,7 @@
 {
   "error": {
-    "noLanguageFound": "No Programming Language found. See 'codebox --help'."
+    "noLanguageFound": "No Programming Language found. See 'codebox --help'.",
+    "noCodeSnippetsFound": "No Code Snippets found. See 'codebox --help'."
   },
   "warning": {
     "codeboxInitialized": "Codebox already initialized. See 'codebox --help'.",
@@ -8,6 +9,7 @@
   },
   "success": {
     "codeboxInitialized": "Codebox initialized. See 'codebox --help'.",
-    "copiedToClipboard": "Code Snippet copied to Clipboard."
+    "copiedToClipboard": "Code Snippet copied to Clipboard.",
+    "deleteCodeSnippet": "Code Snippet deleted."
   }
 }

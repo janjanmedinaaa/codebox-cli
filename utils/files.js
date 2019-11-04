@@ -7,7 +7,7 @@ module.exports = {
     },
 
     getCodeboxDirLocation: () => {
-        return path.dirname(fs.realpathSync(__dirname))
+        return path.dirname(fs.realpathSync(`${__dirname}/../`))
     },
 
     getCurrentDirectoryBase: () => {

@@ -56,7 +56,7 @@ module.exports = {
         return result
     },
 
-    getSearchIndex: (result) => {
+    getCodeboxIndex: (result) => {
         return parseInt(result.split('.')[0]) - 1
     }
 }

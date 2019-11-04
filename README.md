@@ -13,10 +13,12 @@ $ codebox -i
 ```
   -V, --version          output the version number
   -i, --init             Initialize Codebox
+  -a, --all              Get all Code snippets
   -n, --new              Create new Programming Language
   -s, --snip             Save new Code snippet
   -f, --find             Find Code snippets
   -u, --update           Update Code snippet
+  -d, --delete           Delete Code snippet
   -e, --export           Export Codebox snippets
   -c, --clipboard        Code snippet will be from the clipboard
   -l, --language <type>  Set Programming Language
