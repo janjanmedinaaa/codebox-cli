@@ -1,12 +1,14 @@
 const clipboardy = require('clipboardy')
 const logger = require('@janjanmedinaaa/clean/lib/Logs')
+const Gists = require('gists')
 const fs = require('fs')
 
 const files = require('./utils/files')
 const tools = require('./utils/tools')
-const inquirer  = require('./utils/inquirer');
+const inquirer  = require('./utils/inquirer')
 const strings = require('./strings.json')
 const vim = require('./utils/vim')
+const github = require('./utils/github')
 
 const CODE_FOLDER = 'codebox-codes'
 const FOLDER_PWD = `${files.getCodeboxDirLocation()}/${CODE_FOLDER}`
@@ -70,6 +72,32 @@ const codeSnippetList = async(language) => {
   }
 }
 
+const createGists = ({ language, filename, message, jsonData }) => {
+  const gists = new Gists(github.checkAccount())
+  var mdFilename = tools.createMDFileName(language)
+  var gistsData = {
+    description: `${language.capitalize()} Code Snippets`,
+    public: true,
+    files: {}
+  }
+  gistsData.files[mdFilename] = {} 
+  gistsData.files[mdFilename]['content'] = tools.createMDFromJSON(jsonData)
+
+  if (jsonData.gist !== undefined) {
+    gists.edit(jsonData.gist, gistsData).then(res => {
+      files.writeJSONFile(jsonData, filename)
+      logger.success(message)
+    })
+  } else {
+    gists.create(gistsData).then(res => {
+      jsonData['gist'] = res.body.id
+  
+      files.writeJSONFile(jsonData, filename)
+      logger.success(message)
+    })
+  }
+}
+
 const initializeCodebox = () => {
   if (fs.existsSync(FOLDER_PWD)) {
     logger.warning(strings.warning.codeboxInitialized)
@@ -125,8 +153,12 @@ const createCodeSnippet = async({ language, title, clipboard }) => {
     code
   })
 
-  files.writeJSONFile(jsonData, programmingLanguage.filename)
-  logger.success(`${programmingLanguage.language} Code Snippet added.`)
+  createGists({
+    language: programmingLanguage.language,
+    filename: programmingLanguage.filename,
+    message: `${programmingLanguage.language} Code Snippet added.`,
+    jsonData
+  })
 }
 
 const getAllCodeSnippets = async({ language }) => {
@@ -149,8 +181,12 @@ const updateCodeSnippets = async({ language, clipboard }) => {
   var code = (clipboard) ? clipboardy.readSync() : vim.editorSync({ content: codeSnippet.code })
   results.jsonData.snippets[resultIndex].code = code.trim()
 
-  files.writeJSONFile(results.jsonData, results.filename)
-  logger.success(`${results.languageResult} Code Snippet updated.`)
+  createGists({
+    language: results.languageResult,
+    filename: results.filename,
+    message: `${results.languageResult} Code Snippet updated.`,
+    jsonData: results.jsonData
+  })
 }
 
 const deleteCodeSnippets = async({ language }) => {
@@ -160,8 +196,43 @@ const deleteCodeSnippets = async({ language }) => {
   var resultIndex = tools.getCodeboxIndex(results.snippetResult.snippet) 
   results.jsonData.snippets.splice(resultIndex, 1)
 
-  files.writeJSONFile(results.jsonData, results.filename)
-  logger.success(strings.success.deleteCodeSnippet)
+  createGists({
+    language: results.languageResult,
+    filename: results.filename,
+    message: `${results.languageResult} Code Snippet deleted.`,
+    jsonData: results.jsonData
+  })
+}
+
+const importGist = async({ gist }) => {
+  const gists = new Gists(github.checkAccount())
+  var gistResult = await inquirer.checkForGist(gist)
+
+  gists.get(gistResult.gist).then(res => {
+    var fileList = res.body.files
+    Object.keys(fileList).forEach(file => {
+      var gistFilename = fileList[file].filename
+      var languages = files.readJSONFile(LANGUAGES_PWD)
+      var language = tools.getLanguageFromMD(gistFilename)
+      var filename = tools.createCodeSnippetFileName(FOLDER_PWD, language)
+
+      var checker = (lang) => {
+        return lang.language === language.capitalize()
+      }
+
+      if (!languages.languages.some(checker)) {
+        languages.languages.add({
+          id: tools.createNewID(languages.languages),
+          language: language.capitalize(),
+          location: filename,
+          date: Date()
+        })
+      }
+
+      files.writeJSONFile(languages, LANGUAGES_PWD)
+      files.writeFile(filename, fileList[file].content)
+    })
+  })
 }
 
 const exportCodebox = async({ language }) => {
@@ -209,6 +280,7 @@ module.exports = {
   getAllCodeSnippets,
   updateCodeSnippets,
   deleteCodeSnippets,
+  importGist,
   exportCodebox,
   searchCodeSnippets
 }

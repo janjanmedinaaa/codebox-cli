@@ -24,6 +24,8 @@
     "@janjanmedinaaa/clean": "^1.0.0",
     "clipboardy": "^2.1.0",
     "commander": "^4.0.0",
+    "cryptr": "^6.0.0",
+    "gists": "^2.0.0",
     "inquirer": "^7.0.0"
   },
   "homepage": "https://github.com/janjanmedinaaa/codebox-cli"

@@ -8,7 +8,7 @@ module.exports = {
     createMDFromJSON: (obj) => {
         var jsonData = `# ${obj.title} Code Snippets\n\n`
         obj.snippets.forEach(element => {
-            jsonData += `## ${element.title}\n\n\`\`\`\n${element.code.trim()}\n\`\`\`\n\n`
+            jsonData += `## ${element.title.trim()}\n\n\`\`\`\n${element.code.trim()}\n\`\`\`\n\n`
         });
         return jsonData
     },
@@ -28,6 +28,10 @@ module.exports = {
 
     createMDFileName: (language) => {
         return `${language.toLowerCase()}-snippets.md`
+    },
+
+    getLanguageFromMD: (filename) => {
+        return filename.split('-')[0]
     },
 
     createNewID: (array) => {

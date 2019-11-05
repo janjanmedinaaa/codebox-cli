@@ -33,6 +33,10 @@ module.exports = {
         return JSON.parse(rawdata);
     },
 
+    readFile: (filename) => {
+        return fs.readFileSync(filename)
+    },
+
     writeJSONFile: (json, filename) => {
         let data = JSON.stringify(json, null, 2);
         fs.writeFileSync(filename, data);

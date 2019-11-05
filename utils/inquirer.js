@@ -47,6 +47,18 @@ module.exports = {
     return inquirer.prompt(questions)
   },
 
+  checkForGist: (gist) => {
+    if (gist != undefined) return { gist }
+
+    const questions = [
+      {
+        name: 'gist',
+        message: 'Enter Gist ID:'
+      },
+    ]
+    return inquirer.prompt(questions)
+  },
+
   createChooser: (name, message, choices) => {
     const questions = [
       {

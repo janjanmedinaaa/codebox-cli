@@ -1,6 +1,7 @@
 #!/usr/bin/env node 
 
 const program = require('./utils/commander')()
+const github = require('./utils/github')
 const actions = require('./actions')
 
 if (program.init)
@@ -26,3 +27,6 @@ if (program.all)
 
 if (program.delete)
   actions.deleteCodeSnippets(program)
+
+if (program.login)
+  github.checkAccount()
