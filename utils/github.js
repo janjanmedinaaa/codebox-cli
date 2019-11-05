@@ -3,7 +3,7 @@ const inquirer = require('inquirer')
 const Cryptr = require('cryptr')
 const fs = require('fs')
 
-const encryption = require('../encryption.json')
+const encryption = require('../key.json')
 const files = require('./files')
 
 const cryptr = new Cryptr(encryption.key)
